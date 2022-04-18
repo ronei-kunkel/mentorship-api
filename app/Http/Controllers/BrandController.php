@@ -27,8 +27,22 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = $this->brand->all();
-        return $brands;
+        $brand = $this->brand->all();
+        // $brand = null;
+
+        $response = [
+            'success' => false,
+            'brand'   => null
+        ];
+
+        if(is_null($brand)) return $response;
+
+        $response = [
+            'success' => true,
+            'brand'   => $brand
+        ];
+
+        return $response;
     }
 
     /**
@@ -50,6 +64,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $brand = $this->brand->create($request->all());
+
         return $brand;
     }
 
@@ -62,7 +77,20 @@ class BrandController extends Controller
     public function show($id)
     {
         $brand = $this->brand->find($id);
-        return $brand;
+        
+        $response = [
+            'success' => false,
+            'brand'   => null
+        ];
+        
+        if(is_null($brand)) return $response;
+        
+        $response = [
+            'success' => true,
+            'brand'   => $brand->getAttributes()
+        ];
+
+        return $response;
     }
 
     /**
@@ -91,32 +119,28 @@ class BrandController extends Controller
 
         $requestData = $request->all();
 
+        $response = [
+            'success' => false,
+            'message' => 'Nothing to update'
+        ];
+
         if(
-            ($oldBrandData['name']        !== $requestData['name']       ) or
-            ($oldBrandData['description'] !== $requestData['description'])
+            ($oldBrandData['name']        === $requestData['name']       ) and
+            ($oldBrandData['description'] === $requestData['description'])
         ) {
-            $brand->update($requestData);
+            return $response;
         }
 
+        $brand->update($requestData);
         $newBrandData = $brand->getAttributes();
-
-        $requestHaveEqualData = self::equalData($newBrandData, $oldBrandData);
-
-        if($requestHaveEqualData) {
-            return [
-                'success' => false,
-                'message' => 'Nothing to update',
-                'newData' => $newBrandData,
-                'oldData' => $oldBrandData
-            ];
-        }
-
-        return [
+        $response = [
             'success' => true,
             'message' => 'Updated',
-            'newData' => $newBrandData,
-            'oldData' => $oldBrandData
+            'newBrandData' => $newBrandData,
+            'oldBrandData' => $oldBrandData
         ];
+
+        return $response;
     }
 
     /**
@@ -141,7 +165,7 @@ class BrandController extends Controller
      * @param Object $old
      * @return bool
      */
-    public function equalData($new, $old)
+    public function dataObjectsAreEquals(Object $new, Object $old)
     {
         $equal = true;
         foreach($old as $index => $dataOld) {
