@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
-use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -27,20 +26,17 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brand = $this->brand->all();
-        // $brand = null;
+        $brand = $this->brand->orderBy('id')
+                    ->get();
 
         $response = [
-            'success' => false,
-            'brand'   => null
+            'success' => true,
+            'brand'   => []
         ];
 
         if(is_null($brand)) return $response;
 
-        $response = [
-            'success' => true,
-            'brand'   => $brand
-        ];
+        $response['brand'] = $brand;
 
         return $response;
     }
@@ -79,16 +75,13 @@ class BrandController extends Controller
         $brand = $this->brand->find($id);
         
         $response = [
-            'success' => false,
+            'success' => true,
             'brand'   => null
         ];
         
         if(is_null($brand)) return $response;
-        
-        $response = [
-            'success' => true,
-            'brand'   => $brand->getAttributes()
-        ];
+
+        $response['brand'] = $brand->getAttributes();
 
         return $response;
     }
@@ -120,13 +113,13 @@ class BrandController extends Controller
         $requestData = $request->all();
 
         $response = [
-            'success' => false,
+            'success' => true,
             'message' => 'Nothing to update'
         ];
 
         if(
-            ($oldBrandData['name']        === $requestData['name']       ) and
-            ($oldBrandData['description'] === $requestData['description'])
+            $oldBrandData['name']            === $requestData['name']
+            and $oldBrandData['description'] === $requestData['description']
         ) {
             return $response;
         }
