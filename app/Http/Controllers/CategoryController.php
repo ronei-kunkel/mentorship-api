@@ -112,6 +112,10 @@ class CategoryController extends Controller
 
         $requestData = $request->all();
 
+        $requestData['level'] = (int) $requestData['level'];
+
+        if($requestData['parent']) $requestData['parent'] = (int) $requestData['parent'];
+
         $response = [
             'success' => true,
             'message' => 'Nothing to update'
