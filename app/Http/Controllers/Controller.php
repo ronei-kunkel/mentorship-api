@@ -10,4 +10,21 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    /**
+    * Check if data of new and old values are equal
+    *
+    * @param array $newData
+    * @param array $oldData
+    * @return bool
+    */
+    public function haveChanges(array $newData, array $oldData)
+    {
+        $haveChanges = false;
+        foreach($newData as $index => $dataNew) {
+            if($dataNew === $oldData[$index]) continue;
+            $haveChanges = true;
+        }
+        return $haveChanges;
+    }
 }

@@ -31,7 +31,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -64,7 +64,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  \App\Models\Product  $product
      * @return Response
      */
@@ -82,22 +82,5 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         return __METHOD__;
-    }
-
-    /**
-     * Check if data of arrays are equal
-     *
-     * @param array $new
-     * @param array $old
-     * @return bool
-     */
-    public function haveChanges($new, $old)
-    {
-        $haveChanges = false;
-        foreach($new as $index => $dataNew) {
-            if($dataNew === $old[$index]) continue;
-            $haveChanges = true;
-        }
-        return $haveChanges;
     }
 }

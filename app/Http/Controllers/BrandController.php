@@ -54,7 +54,7 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -100,7 +100,7 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int $id
      * @return Response
      */
@@ -142,22 +142,5 @@ class BrandController extends Controller
         (is_null($brand)) ? $success = false : $success = $brand->delete();
 
         return ['success' => $success];
-    }
-
-    /**
-     * Check if data of arrays are equal
-     *
-     * @param array $new
-     * @param array $old
-     * @return bool
-     */
-    public function haveChanges($new, $old)
-    {
-        $haveChanges = false;
-        foreach($new as $index => $dataNew) {
-            if($dataNew === $old[$index]) continue;
-            $haveChanges = true;
-        }
-        return $haveChanges;
     }
 }

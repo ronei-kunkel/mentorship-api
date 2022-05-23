@@ -56,7 +56,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return Response
      */
     public function store(Request $request)
@@ -103,7 +103,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return Response
      */
     public function update(Request $request, $id)
@@ -148,22 +148,5 @@ class CategoryController extends Controller
         (is_null($category)) ? $success = false : $success = $category->delete();
 
         return ['success' => $success];
-    }
-
-    /**
-     * Check if data of arrays are equal
-     *
-     * @param array $new
-     * @param array $old
-     * @return bool
-     */
-    public function haveChanges($new, $old)
-    {
-        $haveChanges = false;
-        foreach($new as $index => $dataNew) {
-            if($dataNew === $old[$index]) continue;
-            $haveChanges = true;
-        }
-        return $haveChanges;
     }
 }
