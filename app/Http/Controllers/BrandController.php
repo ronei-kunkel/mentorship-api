@@ -48,7 +48,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return __METHOD__;
+        return __METHOD__.' - Not Implemented!';
     }
 
     /**
@@ -73,12 +73,12 @@ class BrandController extends Controller
     public function show($id)
     {
         $brand = $this->brand->find($id);
-        
+
         $response = [
             'success' => true,
             'brand'   => null
         ];
-        
+
         if(is_null($brand)) return $response;
 
         $response['brand'] = $brand->getAttributes();
@@ -94,7 +94,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        return __METHOD__;
+        return __METHOD__.' - Not Implemented!';
     }
 
     /**
@@ -117,21 +117,14 @@ class BrandController extends Controller
             'message' => 'Nothing to update'
         ];
 
-        if(
-            $oldBrandData['name']            === $requestData['name']
-            and $oldBrandData['description'] === $requestData['description']
-        ) {
-            return $response;
-        }
+        if(!$this->haveChanges($requestData, $oldBrandData)) return $response;
 
         $brand->update($requestData);
         $newBrandData = $brand->getAttributes();
-        $response = [
-            'success' => true,
-            'message' => 'Updated',
-            'newBrandData' => $newBrandData,
-            'oldBrandData' => $oldBrandData
-        ];
+
+        $response['message'] = 'Updated';
+        $response['newData'] = $newBrandData;
+        $response['oldData'] = $oldBrandData;
 
         return $response;
     }
@@ -152,19 +145,19 @@ class BrandController extends Controller
     }
 
     /**
-     * Check if data of objects are equal
+     * Check if data of arrays are equal
      *
-     * @param Object $new
-     * @param Object $old
+     * @param array $new
+     * @param array $old
      * @return bool
      */
-    public function dataObjectsAreEquals(Object $new, Object $old)
+    public function haveChanges($new, $old)
     {
-        $equal = true;
-        foreach($old as $index => $dataOld) {
-            if($dataOld === $new[$index]) continue;
-            $equal = false;
-        };
-        return $equal;
+        $haveChanges = false;
+        foreach($new as $index => $dataNew) {
+            if($dataNew === $old[$index]) continue;
+            $haveChanges = true;
+        }
+        return $haveChanges;
     }
 }

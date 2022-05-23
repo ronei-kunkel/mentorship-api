@@ -19,10 +19,13 @@ class CreateProductsTable extends Migration
             $table->string('sku', 12);
             $table->text('description')->nullable();
             $table->string('size', 5);
-            $table->string('color', 25);
+            $table->integer('height');
+            $table->integer('width');
+            $table->integer('lenght');
+            $table->integer('weight');
             $table->integer('quantity');
-            $table->double('price', 6, 2);
-            $table->double('promotionalPrice', 6, 2)->nullable();
+            $table->float('price');
+            $table->float('promotional_price')->nullable();
             $table->integer('brand_id');
             $table->integer('category_id');
             $table->integer('promotion_id')->nullable();

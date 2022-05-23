@@ -83,4 +83,21 @@ class ProductController extends Controller
     {
         return __METHOD__;
     }
+
+    /**
+     * Check if data of arrays are equal
+     *
+     * @param array $new
+     * @param array $old
+     * @return bool
+     */
+    public function haveChanges($new, $old)
+    {
+        $haveChanges = false;
+        foreach($new as $index => $dataNew) {
+            if($dataNew === $old[$index]) continue;
+            $haveChanges = true;
+        }
+        return $haveChanges;
+    }
 }

@@ -9,13 +9,36 @@ use Illuminate\Http\Response;
 class PromotionController extends Controller
 {
     /**
+     * Instance of Promotion
+     *
+     * @var Promotion
+     */
+    protected $promotion = null;
+
+    public function __construct(Promotion $promotion) {
+        $this->promotion = $promotion;
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return Response
      */
     public function index()
     {
-        return __METHOD__;
+        $promomotion = $this->promomotion->orderBy('id')
+                    ->get();
+
+        $response = [
+            'success' => true,
+            'promomotion'   => []
+        ];
+
+        if(is_null($promomotion)) return $response;
+
+        $response['promomotion'] = $promomotion;
+
+        return $response;
     }
 
     /**
@@ -34,7 +57,7 @@ class PromotionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store()
     {
         return __METHOD__;
     }
@@ -82,5 +105,22 @@ class PromotionController extends Controller
     public function destroy(Promotion $promotion)
     {
         return __METHOD__;
+    }
+
+    /**
+     * Check if data of arrays are equal
+     *
+     * @param array $new
+     * @param array $old
+     * @return bool
+     */
+    public function haveChanges($new, $old)
+    {
+        $haveChanges = false;
+        foreach($new as $index => $dataNew) {
+            if($dataNew === $old[$index]) continue;
+            $haveChanges = true;
+        }
+        return $haveChanges;
     }
 }

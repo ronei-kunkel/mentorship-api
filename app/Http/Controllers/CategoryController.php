@@ -26,7 +26,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = $this->category->orderBy('id')
+        $category = $this->category->orderBy('level')
+                    ->orderBy('parent')
+                    ->orderBy('id')
                     ->get();
 
         $response = [
@@ -48,7 +50,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return __METHOD__;
+        return __METHOD__.' - Not Implemented!';
     }
 
     /**
@@ -95,7 +97,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return __METHOD__;
+        return __METHOD__.' - Not Implemented!';
     }
 
     /**
@@ -121,22 +123,14 @@ class CategoryController extends Controller
             'message' => 'Nothing to update'
         ];
 
-        if(
-            $oldCategoryData['name']       === $requestData['name']
-            and $oldCategoryData['parent'] === $requestData['parent']
-            and $oldCategoryData['level']  === $requestData['level']
-        ) {
-            return $response;
-        }
+        if(!$this->haveChanges($requestData, $oldCategoryData)) return $response;
 
         $category->update($requestData);
         $newCategoryData = $category->getAttributes();
-        $response = [
-            'success'         => true,
-            'message'         => 'Updated',
-            'newCategoryData' => $newCategoryData,
-            'oldCategoryData' => $oldCategoryData
-        ];
+
+        $response['message'] = 'Updated';
+        $response['newData'] = $newCategoryData;
+        $response['oldData'] = $oldCategoryData;
 
         return $response;
     }
@@ -154,5 +148,22 @@ class CategoryController extends Controller
         (is_null($category)) ? $success = false : $success = $category->delete();
 
         return ['success' => $success];
+    }
+
+    /**
+     * Check if data of arrays are equal
+     *
+     * @param array $new
+     * @param array $old
+     * @return bool
+     */
+    public function haveChanges($new, $old)
+    {
+        $haveChanges = false;
+        foreach($new as $index => $dataNew) {
+            if($dataNew === $old[$index]) continue;
+            $haveChanges = true;
+        }
+        return $haveChanges;
     }
 }
