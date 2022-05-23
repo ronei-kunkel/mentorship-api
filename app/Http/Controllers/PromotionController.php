@@ -26,17 +26,17 @@ class PromotionController extends Controller
      */
     public function index()
     {
-        $promomotion = $this->promomotion->orderBy('id')
+        $promotion = $this->promotion->orderBy('id')
                     ->get();
 
         $response = [
             'success' => true,
-            'promomotion'   => []
+            'promotion'   => []
         ];
 
-        if(is_null($promomotion)) return $response;
+        if(is_null($promotion)) return $response;
 
-        $response['promomotion'] = $promomotion;
+        $response['promotion'] = $promotion;
 
         return $response;
     }
@@ -59,9 +59,9 @@ class PromotionController extends Controller
      */
     public function store(Request $request)
     {
-        $promomotion = $this->promotion->create($request->all());
+        $promotion = $this->promotion->create($request->all());
 
-        return $promomotion;
+        return $promotion;
     }
 
     /**
@@ -72,16 +72,16 @@ class PromotionController extends Controller
      */
     public function show($id)
     {
-        $promomotion = $this->promotion->find($id);
+        $promotion = $this->promotion->find($id);
 
         $response = [
             'success'   => true,
             'promotion' => null
         ];
 
-        if(is_null($promomotion)) return $response;
+        if(is_null($promotion)) return $response;
 
-        $response['promotion'] = $promomotion->getAttributes();
+        $response['promotion'] = $promotion->getAttributes();
 
         return $response;
     }
@@ -106,9 +106,9 @@ class PromotionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $promomotion = $this->promotion->find($id);
+        $promotion = $this->promotion->find($id);
 
-        $oldPromotionData = $promomotion->getAttributes();
+        $oldPromotionData = $promotion->getAttributes();
 
         $requestData = $request->all();
 
@@ -119,8 +119,8 @@ class PromotionController extends Controller
 
         if(!$this->haveChanges($requestData, $oldPromotionData)) return $response;
 
-        $promomotion->update($requestData);
-        $newPromotionData = $promomotion->getAttributes();
+        $promotion->update($requestData);
+        $newPromotionData = $promotion->getAttributes();
 
         // in future, when promotion are updated, are necessary check if have products linked in promotion and insert into queue to update the price if have change in any of price fields
 
@@ -139,9 +139,9 @@ class PromotionController extends Controller
      */
     public function destroy($id)
     {
-        $promomotion = $this->promotion->find($id);
+        $promotion = $this->promotion->find($id);
 
-        (is_null($promomotion)) ? $success = false : $success = $promomotion->delete();
+        (is_null($promotion)) ? $success = false : $success = $promotion->delete();
 
         return ['success' => $success];
     }
