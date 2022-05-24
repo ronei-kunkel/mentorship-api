@@ -1,62 +1,226 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# API
 
-## About Laravel
+## Endpoint
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+`https://feeltech-mentorship-api.herokuapp.com/api`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Resources
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- `/brand` - partially done
+- `/category` - partially done
+- `/promotion` - wip
+- `/product` - in near future
 
-## Learning Laravel
+## Methods
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- GET
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+  - `/{{resource}}` - return all resources:
 
-## Laravel Sponsors
+    - Have registers:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+      Status code: 200
 
-### Premium Partners
+      ```json
+      {
+        "success": true,
+        "{{resource}}": [
+          {...},
+          {...}
+        ]
+      }
+      ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+    - Don't have registers:
 
-## Contributing
+      Status code: 404
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+        ```json
+        {
+          "success": true,
+          "message": "There are no {{resource}} yet",
+          "{{resource}}": []
+        }
+        ```
 
-## Code of Conduct
+    - When error occurs:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+      Status code: Relative to error based on [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) of Mozilla
 
-## Security Vulnerabilities
+        ```json
+        {
+          "success": false,
+          "message": "Report of error"
+        }
+        ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+  - `/{{resource}}/{{id}}` - return specific resource
 
-## License
+    - Have register:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+      Status code: 200
+
+      ```json
+      {
+        "success": true,
+        "{{resource}}": [
+          {...}
+        ]
+      }
+      ```
+
+    - Don't have register:
+
+      Status code: 404
+
+        ```json
+        {
+          "success": true,
+          "message": "Not found this specific {{resource}}",
+          "{{resource}}": []
+        }
+        ```
+
+    - When error occurs:
+
+      Status code: Relative to error based on [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) of Mozilla
+
+        ```json
+        {
+          "success": false,
+          "message": "Report of error"
+        }
+        ```
+
+- POST
+
+  - `/{{resource}}` - create specific resource
+
+    - Success:
+
+      Status code: 201
+
+      ```json
+      {
+        "success": true,
+        "{{resource}}": [
+          {
+            "id": {{id}},
+            ...
+          }
+        ]
+      }
+      ```
+
+    - When error occurs:
+
+      Status code: Relative to error based on [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) of Mozilla
+
+        ```json
+        {
+          "success": false,
+          "message": "Report of error"
+        }
+        ```
+
+- PUT
+
+  - `/{{resource}}/{{id}}` - update partially or completelly specific resource
+
+    - When one or more values are updated:
+
+      Status code: 200
+
+      ```json
+      {
+        "success": true,
+        "message": "Updated",
+        "newData": [
+          {...}
+        ],
+        "oldData": [
+          {...}
+        ]
+      }
+      ```
+
+    - When there is nothing to update:
+
+      Status code: 202
+
+      ```json
+      {
+        "success": true,
+        "message": "Nothing to update"
+      }
+      ```
+
+    - When error occurs:
+
+      Status code: Relative to error based on [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) of Mozilla
+
+        ```json
+        {
+          "success": false,
+          "message": "Report of error"
+        }
+        ```
+
+        <!-- falta tratar quando há uma atualização para um recurso que ainda não existe (uma marca que não foi criada ainda) -->
+
+- DELETE
+
+  - `/{{resource}}/{{id}}` - delete specific resource
+
+    - NEED DOCUMENTATION
+
+## Returns
+
+```json
+{
+  "success": true|false,  // success of the request to the resource of api
+  "message": "string",    // feedback of the requested resource
+  "{{resource}}": [{...}] // requested resource data when success true
+}
+```
+
+<!-- ### Real examples
+
+- When don't have brands:
+
+  ```json
+  {
+    "success": true,
+    "brand": []
+  }
+  ```
+
+- When have brands:
+
+  ```json
+  {
+    "success": true,
+    "brand": [
+      {
+        "id": 1,
+        "name": "Brand One",
+        "description": "Generic description from Brand One"
+      },
+      {
+        "id": 2,
+        "name": "Brand Two",
+        "description": "Generic description from Brand Two"
+      }
+    ]
+  }
+  ```
+
+- When have error in request:
+
+  ```json
+  {
+    "success": false,
+    "message": "Brand with id 0 don't exist!"
+  }
+  ``` -->

@@ -25,7 +25,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return __METHOD__;
+        return response()->json([], 501);
     }
 
     /**
@@ -53,12 +53,11 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Product  $product
      * @return Response
      */
-    public function edit(Product $product)
+    public function edit()
     {
-        return __METHOD__;
+        return response()->json([], 501);
     }
 
     /**

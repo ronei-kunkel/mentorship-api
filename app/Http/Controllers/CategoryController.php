@@ -50,7 +50,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return __METHOD__.' - Not Implemented!';
+        return response()->json([], 501);
     }
 
     /**
@@ -92,12 +92,11 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category  $category
      * @return Response
      */
-    public function edit(Category $category)
+    public function edit()
     {
-        return __METHOD__.' - Not Implemented!';
+        return response()->json([], 501);
     }
 
     /**

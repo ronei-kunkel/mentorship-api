@@ -34,7 +34,7 @@ class BrandController extends Controller
             'brand'   => []
         ];
 
-        if(is_null($brand)) return $response;
+        if($brand->isEmpty()) return $response;
 
         $response['brand'] = $brand;
 
@@ -48,7 +48,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return __METHOD__.' - Not Implemented!';
+        return response()->json([], 501);
     }
 
     /**
@@ -89,12 +89,11 @@ class BrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Brand  $brand
      * @return Response
      */
-    public function edit(Brand $brand)
+    public function edit()
     {
-        return __METHOD__.' - Not Implemented!';
+        return response()->json([], 501);
     }
 
     /**

@@ -21,7 +21,7 @@ class Promotion extends Model
         'value',
         'status',
         'frequency',
-        'field',
+        'price_field',
         'value_type',
         'change'
     ];
