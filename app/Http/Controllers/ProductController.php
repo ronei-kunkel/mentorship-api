@@ -9,13 +9,40 @@ use Illuminate\Http\Response;
 class ProductController extends Controller
 {
     /**
+     * Instance of Promotion
+     *
+     * @var Product
+     */
+    protected $product = null;
+
+    public function __construct(Product $product) {
+        $this->product = $product;
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return Response
      */
     public function index()
     {
-        return __METHOD__;
+        $product = $this->product->orderBy('id')
+                    ->orderBy('brand_id')
+                    ->orderBy('category_id')
+                    ->get();
+
+        $response = [
+            'success' => true,
+            'product'   => []
+        ];
+
+        if($product->isEmpty()) {
+            $response['message'] = 'There are no data of product yet';
+            return response()->json($response, 404);
+        }
+
+        $response['product'] = $product;
+
+        return response()->json($response);
     }
 
     /**

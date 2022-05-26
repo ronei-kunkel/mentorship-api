@@ -30,7 +30,8 @@ class PromotionController extends Controller
                     ->get();
 
         $response = [
-            'success'   => true
+            'success'   => true,
+            'promotion' => []
         ];
 
         if($promotion->isEmpty()) {
@@ -40,7 +41,7 @@ class PromotionController extends Controller
 
         $response['promotion'] = $promotion;
 
-        return $response;
+        return response()->json($response);
     }
 
     /**

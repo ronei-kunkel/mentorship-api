@@ -16,7 +16,7 @@
 
 - GET
 
-  - `/{{resource}}` - return all resources:
+  - `/{{resource}}` - return all data of resource:
 
     - Have registers:
 
@@ -26,8 +26,8 @@
       {
         "success": true,
         "{{resource}}": [
-          {...},
-          {...}
+          {"..."},
+          {"..."}
         ]
       }
       ```
@@ -39,7 +39,7 @@
         ```json
         {
           "success": true,
-          "message": "There are no {{resource}} yet",
+          "message": "There are no data from {{resource}} yet",
           "{{resource}}": []
         }
         ```
@@ -65,7 +65,7 @@
       {
         "success": true,
         "{{resource}}": [
-          {...}
+          {"..."}
         ]
       }
       ```
@@ -106,11 +106,23 @@
         "success": true,
         "{{resource}}": [
           {
-            "id": {{id}},
-            ...
+            "id": "{{id}}",
+            "..."
           }
         ]
       }
+      ```
+
+    - Missed one or more values:
+
+      Status code: 400
+
+      ```json
+      {
+          "success": false,
+          "message": "Any or more values are missing",
+          "values": ["{{value}}", "{{value}}"]
+        }
       ```
 
     - When error occurs:
@@ -137,10 +149,10 @@
         "success": true,
         "message": "Updated",
         "newData": [
-          {...}
+          {"..."}
         ],
         "oldData": [
-          {...}
+          {"..."}
         ]
       }
       ```
@@ -179,9 +191,9 @@
 
 ```json
 {
-  "success": true|false,  // success of the request to the resource of api
+  "success": true false,  // success of the request to the resource of api
   "message": "string",    // feedback of the requested resource
-  "{{resource}}": [{...}] // requested resource data when success true
+  "{{resource}}": [{"..."}] // requested resource data when success true
 }
 ```
 

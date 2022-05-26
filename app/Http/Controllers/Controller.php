@@ -27,4 +27,18 @@ class Controller extends BaseController
         }
         return $haveChanges;
     }
+
+
+    public function missingValues($requiredValues, $receivedValues)
+    {
+        $return = [];
+
+        foreach($requiredValues as $value) {
+            if (!isset($receivedValues[$value])) {
+                array_push($return, $value);
+            }
+        }
+
+        return $return;
+    }
 }

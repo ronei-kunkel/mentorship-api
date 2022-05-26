@@ -26,7 +26,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brand = $this->brand->orderBy('id')
+        $brand = $this->brand->orderBy('name')
                     ->get();
 
         $response = [
@@ -34,11 +34,14 @@ class BrandController extends Controller
             'brand'   => []
         ];
 
-        if($brand->isEmpty()) return $response;
+        if($brand->isEmpty()) {
+            $response['message'] = 'There are no data of brand yet';
+            return response()->json($response, 404);
+        }
 
         $response['brand'] = $brand;
 
-        return $response;
+        return response()->json($response);
     }
 
     /**
@@ -59,9 +62,29 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $brand = $this->brand->create($request->all());
+        $receivedValues = $request->all();
 
-        return $brand;
+        
+        $requiredValues = ['name', 'description'];
+
+        $return = [
+            'success' => true
+        ];
+
+        $missingValues = $this->missingValues($requiredValues, $receivedValues);
+        
+        if (!empty($missingValues)) {
+            $return['success'] = false;
+            $return['message'] = 'Any or more values are missing';
+            $return['values'] = $missingValues;
+            
+            return response()->json($return, 400);
+        }
+        
+        $brand = $this->brand->create($receivedValues);
+        $return['brand'] = $brand;
+
+        return response()->json($return, 201);
     }
 
     /**

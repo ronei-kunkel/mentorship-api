@@ -36,11 +36,14 @@ class CategoryController extends Controller
             'category'   => []
         ];
 
-        if(is_null($category)) return $response;
+        if($category->isEmpty()) {
+            $response['message'] = 'There are no data of category yet';
+            return response()->json($response, 404);
+        }
 
         $response['category'] = $category;
 
-        return $response;
+        return response()->json($response);
     }
 
     /**
