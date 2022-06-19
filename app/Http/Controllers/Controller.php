@@ -29,7 +29,7 @@ class Controller extends BaseController
     }
 
 
-    public function missingValues($requiredValues, $receivedValues)
+    public function checkRequiredValues($requiredValues, $receivedValues)
     {
         $return = [];
 

@@ -15,7 +15,8 @@ class CategoryController extends Controller
      */
     protected $category = null;
 
-    public function __construct(Category $category) {
+    public function __construct(Category $category)
+    {
         $this->category = $category;
     }
 
@@ -27,16 +28,16 @@ class CategoryController extends Controller
     public function index()
     {
         $category = $this->category->orderBy('level')
-                    ->orderBy('parent')
-                    ->orderBy('id')
-                    ->get();
+            ->orderBy('parent')
+            ->orderBy('id')
+            ->get();
 
         $response = [
             'success' => true,
             'category'   => []
         ];
 
-        if($category->isEmpty()) {
+        if ($category->isEmpty()) {
             $response['message'] = 'There are no data of category yet';
             return response()->json($response, 404);
         }
@@ -64,9 +65,18 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = $this->category->create($request->all());
+        $receivedValues = $request->validate($this->category->rules(), $this->category->feedback());
 
-        return $category;
+        $this->validateHierarchy($receivedValues);
+
+        $category = $this->category->create($receivedValues);
+
+        $return = [
+            'message'  => 'Category successfully created.',
+            'category' => $category
+        ];
+
+        return response()->json($return, 201);
     }
 
     /**
@@ -84,12 +94,11 @@ class CategoryController extends Controller
             'category' => null
         ];
 
-        if(is_null($category)) return $response;
+        if (is_null($category)) return $response;
 
         $response['category'] = $category->getAttributes();
 
         return $response;
-
     }
 
     /**
@@ -118,14 +127,14 @@ class CategoryController extends Controller
 
         $requestData['level'] = (int) $requestData['level'];
 
-        if($requestData['parent']) $requestData['parent'] = (int) $requestData['parent'];
+        if ($requestData['parent']) $requestData['parent'] = (int) $requestData['parent'];
 
         $response = [
             'success' => true,
             'message' => 'Nothing to update'
         ];
 
-        if(!$this->haveChanges($requestData, $oldCategoryData)) return $response;
+        if (!$this->haveChanges($requestData, $oldCategoryData)) return $response;
 
         $category->update($requestData);
         $newCategoryData = $category->getAttributes();
@@ -150,5 +159,39 @@ class CategoryController extends Controller
         (is_null($category)) ? $success = false : $success = $category->delete();
 
         return ['success' => $success];
+    }
+
+
+    private function validateHierarchy($receivedValues)
+    {
+        if (isset($receivedValues['parent']) and !is_null($receivedValues['parent'])) {
+            $parentCategory = $this->category->find($receivedValues['parent']);
+
+            // check if exists parent category 
+            if (is_null($parentCategory)) return response()->json(
+                [
+                    'message' => 'The parent category you entered doesn\'t yet exist.',
+                    'errors'  => [
+                        'parent' => [
+                            'The parent category doesn\'t exist'
+                        ]
+                    ]
+                ],
+                406
+            );
+
+            // check if the level of parent is equal to category
+            if ($parentCategory['level'] == $receivedValues['level']) return response()->json(
+                [
+                    'message' => 'The level of category and parent can\'t be equals. The category level must be greater than parent category level.',
+                    'errors'  => [
+                        'level' => [
+                            'The value are equal to parent category level'
+                        ]
+                    ]
+                ],
+                409
+            );
+        }
     }
 }

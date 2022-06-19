@@ -18,4 +18,19 @@ class Brand extends Model
         'name',
         'description'
     ];
+
+    public function rules()
+    {
+        return [
+            'name'        => 'required',
+            'description' => 'nullable'
+        ];
+    }
+
+    public function feedback()
+    {
+        return [
+            'required' => 'The field is required'
+        ];
+    }
 }

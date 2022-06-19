@@ -19,4 +19,21 @@ class Category extends Model
         'parent',
         'level'
     ];
+
+    public function rules()
+    {
+        return [
+            'name'   => 'required',
+            'parent' => 'nullable|gt:0',
+            'level'  => 'required|gt:0'
+        ];
+    }
+
+    public function feedback()
+    {
+        return [
+            'required' => 'The field is required',
+            'gt'       => 'Value must be null or greater than 0'
+        ];
+    }
 }

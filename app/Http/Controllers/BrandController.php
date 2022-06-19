@@ -15,7 +15,8 @@ class BrandController extends Controller
      */
     protected $brand = null;
 
-    public function __construct(Brand $brand) {
+    public function __construct(Brand $brand)
+    {
         $this->brand = $brand;
     }
 
@@ -27,14 +28,14 @@ class BrandController extends Controller
     public function index()
     {
         $brand = $this->brand->orderBy('name')
-                    ->get();
+            ->get();
 
         $response = [
             'success' => true,
             'brand'   => []
         ];
 
-        if($brand->isEmpty()) {
+        if ($brand->isEmpty()) {
             $response['message'] = 'There are no data of brand yet';
             return response()->json($response, 404);
         }
@@ -62,25 +63,26 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate($this->brand->rules(), $this->brand->feedback());
+
         $receivedValues = $request->all();
 
-        
         $requiredValues = ['name', 'description'];
 
         $return = [
             'success' => true
         ];
 
-        $missingValues = $this->missingValues($requiredValues, $receivedValues);
-        
-        if (!empty($missingValues)) {
+        $checkRequiredValues = $this->checkRequiredValues($requiredValues, $receivedValues);
+
+        if (!empty($checkRequiredValues)) {
             $return['success'] = false;
             $return['message'] = 'Any or more values are missing';
-            $return['values'] = $missingValues;
-            
+            $return['values'] = $checkRequiredValues;
+
             return response()->json($return, 400);
         }
-        
+
         $brand = $this->brand->create($receivedValues);
         $return['brand'] = $brand;
 
@@ -95,14 +97,20 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-        $brand = $this->brand->find($id);
-
         $response = [
             'success' => true,
             'brand'   => null
         ];
 
-        if(is_null($brand)) return $response;
+        if(!is_numeric($id) or !isset($id)) {
+            $response['success'] = false;
+            $response['message'] = 'id of brand is required';
+            return $response;
+        }
+
+        $brand = $this->brand->find($id);
+
+        if (is_null($brand)) return $response;
 
         $response['brand'] = $brand->getAttributes();
 
@@ -128,18 +136,27 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $response = [
+            'success' => true,
+            'message' => 'Nothing to update'
+        ];
+
+        if(!isset($id) or !is_numeric($id)) {
+            $response['success'] = false;
+            $response['message'] = 'id of brand is required in endpoint. <br> E.g.: /api/brand/1';
+            return $response;
+        }
+
+        $request->validate($this->brand->rules(), $this->brand->feedback());
+
         $brand = $this->brand->find($id);
 
         $oldBrandData = $brand->getAttributes();
 
         $requestData = $request->all();
 
-        $response = [
-            'success' => true,
-            'message' => 'Nothing to update'
-        ];
 
-        if(!$this->haveChanges($requestData, $oldBrandData)) return $response;
+        if (!$this->haveChanges($requestData, $oldBrandData)) return $response;
 
         $brand->update($requestData);
         $newBrandData = $brand->getAttributes();
@@ -161,8 +178,19 @@ class BrandController extends Controller
     {
         $brand = $this->brand->find($id);
 
-        (is_null($brand)) ? $success = false : $success = $brand->delete();
+        $response = [
+            'success' => true,
+            'message' => 'Deleted'
+        ];
 
-        return ['success' => $success];
+        if (is_null($brand)) {
+            $response['success'] = false;
+            $response['message'] = 'This Brand doesnt exist';
+            return $response;
+        }
+
+        $brand->delete();
+
+        return $response;
     }
 }

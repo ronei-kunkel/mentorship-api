@@ -62,67 +62,30 @@ class PromotionController extends Controller
      */
     public function store(Request $request)
     {
-        $request = $request->all();
-
-        $requiredFields = ['name', 'start_date', 'end_date', 'value_type', 'status', 'frequency', 'price_field', 'change'];
-
-        $return = [
-            'success' => false,
-            'message' => ''
-        ];
-
-        foreach($requiredFields as $field) {
-            if (!isset($request["$field"])) {
-                $return['message'] .= "The field '$field' is required! ";
-            }
-        }
-
-        if($return['message']) return $return;
-
-        $request['value'] = (float) $request['value'];
-
         echo "<pre>";
-        var_dump($request);
+        print_r($request->validate($this->promotion->rules(), $this->promotion->feedback()));
         echo "</pre>";
         exit;
 
-        if(!date_format($request['start_date'], 'YYYY-mm-dd')) {
-            $return['message'] = 'Value to field \'start_date\' needs to match the pattern \'YYYY-mm-dd hh:mm:ss\'';
-            return $return;
+
+        $receivedValues = $request->all();
+
+        $return = [
+            'success' => true
+        ];
+
+        if(!empty($checkRequiredValues)) {
+            $return['success'] = false;
+            $return['message'] = 'Any or more values are missing';
+            $return['values'] = $checkRequiredValues;
+
+            return response()->json($return, 400);
         }
-
-        if(!date_format($request['end_date'], 'YYYY-mm-dd')) {
-            $return['message'] = 'Value to field \'end_date\' needs to match the pattern \'YYYY-mm-dd hh:mm:ss\'';
-            return $return;
-        }
-
-        if(!in_array($request['status'], ['active', 'inactive'])){
-            $return['message'] = 'Value to field \'status\' needs to be \'active\' or \'inactive\'';
-            return $return;
-        }
-
-        if(!in_array($request['frequency'], ['single', 'weekly', 'monthly', 'annual'])){
-            $return['message'] = 'Value to field \'frequency\' needs to be \'single\' or \'weekly\' or \'monthly\' or \'annual\'';
-            return $return;
-        }
-
-        if(!in_array($request['price_field'], ['price', 'promotional_price'])){
-            $return['message'] = 'Value to field \'price_field\' needs to be \'price\' or \'promotional_price\'';
-            return $return;
-        }
-
-
-
-
-
-        // if(!number_format((str) $request['value'], 2,'.','')){
-        //     $return['message'] = 'Value to field \'price_field\' needs to be \'price\' or \'promotional_price\'';
-        //     return $return;
-        // }
 
         $promotion = $this->promotion->create($request);
+        $return['promotion'] = $promotion;
 
-        return $promotion;
+        return response()->json($return, 201);
     }
 
     /**
